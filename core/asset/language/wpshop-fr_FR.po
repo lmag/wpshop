@@ -194,6 +194,11 @@ msgstr "%s est un champs requis."
 msgid "%s is already used."
 msgstr "%s est déjà utilisé."
 
+#: modules/checkout/class/class-checkout.php:154
+#, php-format
+msgid "Login here"
+msgstr "Connectez vous ici"
+
 #: modules/checkout/filter/class-checkout-filter.php:60
 msgid "Add to wish list"
 msgstr "Ajouter à la liste d'envie"

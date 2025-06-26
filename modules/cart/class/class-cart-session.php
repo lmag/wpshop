@@ -165,7 +165,6 @@ class Cart_Session extends Singleton_Util {
 		$_SESSION['wps_proposal_id']             = $this->proposal_id;
 		$_SESSION['wps_order_id']                = $this->order_id;
 		$_SESSION['wps_qty']                     = $this->qty;
-		$_SESSION['wps_shipping_cost']           = $this->shipping_cost;
 		$_SESSION['wps_external_data']           = $this->external_data;
 
 		if ( empty( $this->cart_contents ) ) {
