@@ -12,6 +12,7 @@
 namespace wpshop;
 
 use eoxia\Singleton_Util;
+use stdClass;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -160,7 +161,7 @@ class Checkout extends Singleton_Util {
 
 					if ( ! is_user_logged_in() && 'email' === $field_key && false !== email_exists( $data['contact']['email'] ) ) {
 						/* translators: mail@domain.ext is already used. */
-						$errors->add( 'email-exists', apply_filters( 'wps_checkout_email_exists_notice', sprintf( __( '%s is already used.', 'wpshop' ), '<strong>' . esc_html( $field['label'] ) . '</strong>' ), $field['label'] ) );
+						$errors->add( 'email-exists', apply_filters( 'wps_checkout_email_exists_notice', sprintf( __( '%s is already used.', 'wpshop' ), '<strong>' . esc_html( $field['label'] ) . '</strong>' ), $field['label'] ) . ' <a href="' . Pages::g()->get_connection_link() . '">' . __('Login here', 'wpshop') . '</a>' );
 						$error_field = array(
 							'email_exists' => true,
 							'input_class'  => $fieldset_key . '-' . $field_key,
@@ -306,27 +307,31 @@ class Checkout extends Singleton_Util {
 	public function get_users_informations( $request ) {
 		$current_user = wp_get_current_user();
 
-		$contact = User::g()->get( array(
-			'search' => $current_user->user_email,
-			'number' => 1,
-		), true );
-
-		$third_party = Third_Party::g()->get( array( 'id' => $contact->data['third_party_id'] ), true );
+		if (!empty($current_user->user_email)) {
+			$contact = User::g()->get( array(
+				'search' => $current_user->user_email,
+				'number' => 1,
+			), true );
+			$third_party = Third_Party::g()->get( array( 'id' => $contact->data['third_party_id'] ), true );
+		} else {
+			$contact = new stdClass();
+			$third_party = new stdClass();
+		}
 
 		$countries = get_countries();
 
 		$fields = $this->get_checkout_fields();
-	
+
 		return rest_ensure_response( [
 			'values' => [
-				'country_id' => $third_party->data['country_id'],
-				'contact'    => $third_party->data['address'],
-				'zip'        => $third_party->data['zip'],
-				'town'       => $third_party->data['town'],
-				'firstname'  => $contact->data['firstname'],
-				'lastname'   => $contact->data['lastname'],
-				'phone'      => $contact->data['phone'],
-				'email'      => $contact->data['email'],
+				'country_id' => $third_party->data['country_id'] ??  0,
+				'contact'    => $third_party->data['address'] ?? '',
+				'zip'        => $third_party->data['zip'] ?? '',
+				'town'       => $third_party->data['town'] ?? '',
+				'firstname'  => $contact->data['firstname']	?? '',
+				'lastname'   => $contact->data['lastname'] ?? '',
+				'phone'      => $contact->data['phone'] ?? '',
+				'email'      => $contact->data['email'] ?? '',
 			],
 			'fields'      => array_merge( $fields['contact'], $fields['third_party'] ),
 			'countries'   => $countries,

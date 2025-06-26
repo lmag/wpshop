@@ -101,6 +101,9 @@ class Emails extends Singleton_Util {
 	 * @param array  $data       Les données utilisées par l'email.
 	 */
 	public function send_mail( $to, $type_email, $data = array() ) {
+
+		error_log( 'send_mail called with type: ' . $type_email . ' to ' . $to );
+
 		$shop_options = get_option( 'wps_dolibarr', Settings::g()->default_settings );
 
 		if ( empty( $shop_options['shop_email'] ) ) {

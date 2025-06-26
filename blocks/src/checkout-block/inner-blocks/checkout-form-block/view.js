@@ -151,9 +151,7 @@ const CheckoutForm = () => {
 
         </div>
         {error &&
-            <div class="wps-checkout-error">
-                {error}
-            </div>
+            <div class="wps-checkout-error" dangerouslySetInnerHTML={{ __html: error }}></div>
         }
         </div>
     )

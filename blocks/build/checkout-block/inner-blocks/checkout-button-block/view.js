@@ -390,6 +390,10 @@ const CheckoutAcceptance = () => {
       if (response.data.url) {
         window.location.href = response.data.url;
       }
+      if (response.data.errors) {
+        console.log(response.data.errors.errors);
+        setError(Object.values(response.data.errors.errors)[0][0]);
+      }
     });
     return true;
   };
