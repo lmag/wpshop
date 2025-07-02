@@ -37,6 +37,7 @@ export default function Edit() {
 				template={[
 					[ 'core/group', { align: 'wide', layout: {type: 'constrained'}}, [
 						[ 'wpshop/product-title', {} ],
+						[ 'wpshop/product-description', {} ],
 						[ 'wpshop/product-image', {} ],
 						[ 'wpshop/product-price', {} ],
 						[ 'wpshop/product-add-cart', {} ]
