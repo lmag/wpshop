@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
 		<div class="wps-page-header-title-container">
 			<div class="wps-page-header-title">
 				<?php
-				if ( 0 === $third_party->data['id'] ) :
+				if ( empty($third_party->data['id']) ) :
 					View_Util::exec( 'wpshop', 'third-parties', 'single-title-edit', array(
 						'third_party' => $third_party,
 					) );
@@ -41,7 +41,7 @@ defined( 'ABSPATH' ) || exit;
 			</div>
 			<div class="wps-page-header-actions">
 				<?php if ( Settings::g()->dolibarr_is_active() ) : ?>
-					<a class="button <?php echo empty( $third_party->data['external_id'] ) ? 'disabled' : ''; ?>" href="<?php echo esc_attr( $doli_url ); ?>/societe/card.php?id=<?php echo $third_party->data['external_id']; ?>" target="_blank"><?php esc_html_e( 'Edit in Dolibarr', 'wpshop' ); ?></a>
+					<a class="button <?php echo empty( $third_party->data['external_id'] ) ? 'disabled' : ''; ?>" href="<?php echo esc_attr( $doli_url ); ?>/societe/card.php?id=<?php echo $third_party->data['external_id']; ?>&action=edit" target="_blank"><?php esc_html_e( 'Edit in Dolibarr', 'wpshop' ); ?></a>
 				<?php endif; ?>
 			</div>
 		</div>

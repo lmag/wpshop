@@ -44,7 +44,6 @@ class Third_Party_List_Table extends \WP_List_Table {
      */
     public function get_columns() {
         return array(
-            'cb'           => '<input type="checkbox" />',
             'title'        => __( 'Title', 'wpshop' ),
             'email'        => __( 'Email', 'wpshop' ),
             'phone'        => __( 'Phone', 'wpshop' ),
@@ -150,22 +149,6 @@ class Third_Party_List_Table extends \WP_List_Table {
     }
 
     /**
-     * Checkbox column rendering.
-     *
-     * @since 2.4.0
-     *
-     * @param object $item The current item.
-     *
-     * @return string
-     */
-    public function column_cb( $item ) {
-        return sprintf(
-            '<input type="checkbox" name="third_party_ids[]" value="%s" />',
-            $item->id
-        );
-    }
-
-    /**
      * Title column rendering.
      *
      * @since 2.4.0
@@ -176,13 +159,13 @@ class Third_Party_List_Table extends \WP_List_Table {
      */
     public function column_title( $item ) {
         $title = ! empty( $item->name ) ? $item->name : __( '(no title)', 'wpshop' );
-        $edit_link = admin_url( 'admin.php?page=wps-third-party&id=' . $item->id );
+        $edit_link = admin_url( 'admin.php?page=wps-third-party&id=' . $item->array_options->options__wps_id );
         
         $actions = array(
             'edit' => '<a href="' . esc_url( $edit_link ) . '">' . __( 'Edit', 'wpshop' ) . '</a>',
         );
         
-        return '<a class="row-title" href="' . esc_url( $edit_link ) . '">' . esc_html( $title ) . '</a>' . $this->row_actions( $actions );
+        return '<div style="padding-left: 10px;"><a class="row-title" href="' . esc_url( $edit_link ) . '">' . esc_html( $title ) . '</a>' . $this->row_actions( $actions ) . '</div>';
     }
 
     /**
