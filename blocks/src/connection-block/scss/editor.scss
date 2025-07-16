@@ -64,6 +64,7 @@
     border-radius: 4px;
     font-size: 15px;
     transition: border 0.3s;
+    box-sizing: border-box;
 }
 
 .form-group input:focus {
@@ -125,6 +126,32 @@
     margin-bottom: 20px;
     border-radius: 4px;
     border: 1px solid #f5c6cb;
+}
+
+.connection-success {
+    background: #d4edda;
+    color: #155724;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    border: 1px solid #c3e6cb;
+}
+
+.back-to-login {
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-left: 12px;
+}
+
+.back-to-login:hover {
+    background: #5a6268;
 }
 
 .wp-block-wpshop-connection-block-editor {
@@ -191,6 +218,7 @@
             border-radius: 4px;
             font-size: 15px;
             background-color: #f9f9f9;
+            box-sizing: border-box;
         }
     }
 

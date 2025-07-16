@@ -159,13 +159,13 @@ class Third_Party_List_Table extends \WP_List_Table {
      */
     public function column_title( $item ) {
         $title = ! empty( $item->name ) ? $item->name : __( '(no title)', 'wpshop' );
-        $edit_link = admin_url( 'admin.php?page=wps-third-party&id=' . $item->array_options->options__wps_id );
+        $edit_link = admin_url( 'admin.php?page=wps-third-party&id=' . $item->id );
         
         $actions = array(
             'edit' => '<a href="' . esc_url( $edit_link ) . '">' . __( 'Edit', 'wpshop' ) . '</a>',
         );
         
-        return '<div style="padding-left: 10px;"><a class="row-title" href="' . esc_url( $edit_link ) . '">' . esc_html( $title ) . '</a>' . $this->row_actions( $actions ) . '</div>';
+        return '<a class="row-title" href="' . esc_url( $edit_link ) . '">' . esc_html( $title ) . '</a>' . $this->row_actions( $actions );
     }
 
     /**
