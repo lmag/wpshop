@@ -209,10 +209,10 @@ class Invoice_List_Table extends \WP_List_Table {
             case 'order_ref':
                 // Check if there are linked commands
                 if ( !empty($item->data['linked_objects_ids']['commande'][0])) {
-                    
+
                     // Get the first linked command ID
                     $command_id = $item->data['linked_objects_ids']['commande'][0];
-                    
+
                     // Fetch the command object using search instead of get
                     if (class_exists('wpshop\Doli_Order')) {
                         $commands = Doli_Order::g()->search('', array('id' => $command_id));
@@ -221,12 +221,12 @@ class Invoice_List_Table extends \WP_List_Table {
                             $dolibarr_option = get_option('wps_dolibarr', Settings::g()->default_settings);
                             $dolibarr_url = rtrim($dolibarr_option['dolibarr_url'], '/');
                             $view_url = $dolibarr_url . '/commande/card.php?id=' . $commands[0]->data['external_id'];
-                            
+
                             // Create actions array for the row actions
                             $actions = array(
                                 'view_dolibarr' => '<a href="' . esc_url($view_url) . '" target="_blank">' . __('View in Dolibarr', 'wpshop') . '</a>',
                             );
-                            
+
                             // Return clickable link with the actions
                             return sprintf(
                                 '<a href="%s"><strong>%s</strong></a>%s',
@@ -240,14 +240,14 @@ class Invoice_List_Table extends \WP_List_Table {
                 return '-';
             case 'customer':
                 $third_party = Third_Party::g()->get( array( 'id' => $item->data['third_party_id'] ), true );
-                if ( ! empty( $third_party ) ) {
+                if ( ! empty( $third_party->data ) ) {
                     return sprintf(
                         '<a href="%s">%s</a>',
                         admin_url( 'admin.php?page=wps-third-party&id=' . $third_party->data['id'] ),
                         $third_party->data['title']
                     );
                 }
-                return '';
+                return '-';
             case 'total_ht':
                 return number_format( $item->data['total_ht'], 2, ',', ' ' ) . ' €';
             case 'total_ttc':

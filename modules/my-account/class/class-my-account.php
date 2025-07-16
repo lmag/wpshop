@@ -209,9 +209,9 @@ class My_Account extends Singleton_Util {
 			}
 		) );
 
-		register_rest_route( 'wp-shop/v1', '/lost-password', array(
+		register_rest_route( 'wp-shop/v1', '/forgot-password', array(
 			'methods'  => 'POST',
-			'callback' => [$this, 'lost_password' ],
+			'callback' => [$this, 'forgot_password' ],
 			'permission_callback' => function () {
 				return ! is_user_logged_in();
 			}
@@ -335,7 +335,22 @@ class My_Account extends Singleton_Util {
 		], 200 );
 	}
 
-	public function lost_password( $request ) {
+	public function forgot_password( $request ) {
+
+		$email = $request->get_param( 'email' );
+		if ( empty( $email ) || ! is_email( $email ) ) {
+			return new \WP_Error( 'invalid_email', __( 'Please provide a valid email address.', 'wpshop' ), [ 'status' => 400 ] );
+		}
+
+		$user = get_user_by( 'email', $email );
+		if ( ! $user ) {
+			return new \WP_Error( 'user_not_found', __( 'No user found with this email address.', 'wpshop' ), [ 'status' => 404 ] );
+		}
+		$retrieve_password_result = retrieve_password( $user->user_login );
+		if ( is_wp_error( $retrieve_password_result ) ) {
+			return new \WP_Error( 'password_reset_failed', __( 'Password reset failed. Please try again.', 'wpshop' ), [ 'status' => 500 ] );
+		}
+
 		return new \WP_REST_Response( [
 			'success' => true,
 			'message' => __( 'Password reset email sent successfully.', 'wpshop' ),

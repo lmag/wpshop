@@ -32,6 +32,9 @@ const ConnectionBlock = ({ accountUrl }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+    const [forgotPasswordMessage, setForgotPasswordMessage] = useState('');
     
     // Login form states
     const [loginCredentials, setLoginCredentials] = useState({
@@ -136,6 +139,35 @@ const ConnectionBlock = ({ accountUrl }) => {
         });
     };
 
+    const handleForgotPasswordSubmit = (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError('');
+        setForgotPasswordMessage('');
+
+        apiFetch({
+            path: 'wp-shop/v1/forgot-password',
+            method: 'POST',
+            data: {
+                email: forgotPasswordEmail,
+            },
+        }).then((response) => {
+            setForgotPasswordMessage(__('If this email exists in our system, you will receive a password reset link.', 'wpshop'));
+            setForgotPasswordEmail('');
+        }).catch((error) => {
+            setError(error.message || __('Failed to send reset email. Please try again.', 'wpshop'));
+        }).finally(() => {
+            setIsLoading(false);
+        });
+    };
+
+    const handleBackToLogin = () => {
+        setShowForgotPassword(false);
+        setForgotPasswordMessage('');
+        setForgotPasswordEmail('');
+        setError('');
+    };
+
     return (
         <div className="wp-block-wpshop-connection-block">
             <div className="connection-container">
@@ -163,7 +195,36 @@ const ConnectionBlock = ({ accountUrl }) => {
                         </div>
                     )}
                     
-                    {isLogin ? (
+                    {forgotPasswordMessage && (
+                        <div className="connection-success">
+                            {forgotPasswordMessage}
+                        </div>
+                    )}
+                    
+                    {showForgotPassword ? (
+                        <form className="forgot-password-form" onSubmit={handleForgotPasswordSubmit}>
+                            <div className="form-group">
+                                <label htmlFor="forgot-email">{__('Email Address', 'wpshop')}</label>
+                                <input
+                                    type="email"
+                                    id="forgot-email"
+                                    name="email"
+                                    value={forgotPasswordEmail}
+                                    onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            
+                            <div className="form-actions">
+                                <button type="submit" className="submit-button" disabled={isLoading}>
+                                    {isLoading ? __('Sending...', 'wpshop') : __('Send Reset Link', 'wpshop')}
+                                </button>
+                                <button type="button" className="back-to-login" onClick={handleBackToLogin}>
+                                    {__('Back to Login', 'wpshop')}
+                                </button>
+                            </div>
+                        </form>
+                    ) : isLogin ? (
                         <form className="login-form" onSubmit={handleLoginSubmit}>
                             <div className="form-group">
                                 <label htmlFor="username">{__('Username', 'wpshop')}</label>
@@ -204,7 +265,10 @@ const ConnectionBlock = ({ accountUrl }) => {
                                 <button type="submit" className="submit-button" disabled={isLoading}>
                                     {isLoading ? __('Logging in...', 'wpshop') : __('Login', 'wpshop')}
                                 </button>
-                                <a href="#" className="forgot-password">
+                                <a href="#" className="forgot-password" onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowForgotPassword(true);
+                                }}>
                                     {__('Forgot your password?', 'wpshop')}
                                 </a>
                             </div>
