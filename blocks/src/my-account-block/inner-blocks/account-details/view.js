@@ -29,7 +29,9 @@ import { storeName } from '../../../store/my-account-store';
 
 import apiFetch from '@wordpress/api-fetch';
 
-const AccountDetails = () => {
+const AccountDetails = (props) => {
+
+    const countries = props.countries ? JSON.parse(props.countries) : [];
 
     const [contact, setContact] = useState( null );
     const [third_party, setThirdParty] = useState( null );
@@ -127,7 +129,9 @@ const AccountDetails = () => {
                 <div class="form-element form-element-disable">
                     <span class="form-label">{ __( 'Country', 'wpshop' ) }</span>
                     <label class="form-field-container">
-                        <input type="text" class={`form-field ${isLoading ? 'animate-pulse' : ''}`} name="email" value={third_party?.country} readonly/>
+                        <input type="text" class={`form-field ${isLoading ? 'animate-pulse' : ''}`} name="email" value={countries.find(
+                            (country) => country.id === (third_party ? third_party.country : 0)
+                        )?.label} readonly/>
                     </label>
                 </div>
             </div>
@@ -135,5 +139,9 @@ const AccountDetails = () => {
     )
 }
 
-render(<AccountDetails />, '.wp-block-wpshop-account-details');
+render(<AccountDetails
+    countries={document.getElementsByClassName('wp-block-wpshop-account-details')[0].getAttribute('data-countries')}
+/>, '.wp-block-wpshop-account-details');
+
+
 export default AccountDetails;
