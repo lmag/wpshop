@@ -1,0 +1,10 @@
+{
+	"name": "GravityForms",
+	"slug": "gravityforms",
+	"since": "1.0.0",
+	"description": "Le module gérant l'intégration Gravity Forms",
+	"path": "module/gravityforms/",
+	"dependencies": {
+      "class": {}
+	}
+}
