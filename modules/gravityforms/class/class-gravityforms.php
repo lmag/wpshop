@@ -43,9 +43,9 @@ class GravityForms extends Singleton_Util {
 	public function populate_easycrm_column( $value, $form_id, $field_id, $entry ) {
 		if ( $field_id === 'easycrm' ) {
 			if ( ! empty( gform_get_meta( $entry['id'], 'easycrm_project_id' ) ) ) {
-				return '<input type="checkbox" checked disabled style="margin-right: 5px; vertical-align: middle;"><span style="vertical-align: middle;">Importé</span>';
+				return '<span style="color: #32CD32; font-weight: bold;">Importé</span>';
 			} else {
-				return '<input type="checkbox" disabled style="margin-right: 5px; vertical-align: middle;"><span style="vertical-align: middle;">Non importé</span>';
+				return '<span style="color: #DC143C; font-weight: bold;">Non importé</span>';
 			}
 		}
 		return $value;

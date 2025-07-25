@@ -137,6 +137,10 @@ class Settings_Action {
 		$split_product            = isset( $_POST['split_product'] ) && 'on' == $_POST['split_product'] ? true : false;
 		$price_min                = ! empty( $_POST['price_min'] ) ? (int) $_POST['price_min'] : 0;
 
+		$re_captcha = isset( $_POST['re_captcha'] ) && 'on' == $_POST['re_captcha'] ? true : false;
+		$re_captcha_private_key = ! empty( $_POST['re_captcha_private_key'] ) ? sanitize_text_field( $_POST['re_captcha_private_key'] ) : '';
+		$re_captcha_public_key = ! empty( $_POST['re_captcha_public_key'] ) ? sanitize_text_field( $_POST['re_captcha_public_key'] ) : '';
+
 		$dolibarr_option = get_option( 'wps_dolibarr', Settings::g()->default_settings );
 
 		$dolibarr_option['shop_email']               = $shop_email;
@@ -144,6 +148,11 @@ class Settings_Action {
 		$dolibarr_option['thumbnail_size']['height'] = $thumbnail_size['height'];
 		$dolibarr_option['split_product']            = $split_product;
 		$dolibarr_option['price_min']                = $price_min;
+
+		$dolibarr_option['re_captcha']               = $re_captcha;
+		$dolibarr_option['re_captcha_private_key']   = $re_captcha_private_key;
+		$dolibarr_option['re_captcha_public_key']    = $re_captcha_public_key;
+
 
 		update_option( 'wps_dolibarr', $dolibarr_option );
 
