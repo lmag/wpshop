@@ -22,13 +22,100 @@
  
 import { render } from '../utils';
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useState, useRef } from '@wordpress/element';
 
 import { useSelect, useDispatch, use } from '@wordpress/data';
 
 import apiFetch from '@wordpress/api-fetch';
 
-const ConnectionBlock = ({ accountUrl }) => {
+// reCAPTCHA component
+const ReCaptcha = ({ onVerify, onExpired, onError, uniqueId, siteKey }) => {
+    const captchaRef = useRef(null);
+    const [captchaId, setCaptchaId] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
+    const isLoadingRef = useRef(false);
+    
+    useEffect(() => {
+        const loadRecaptcha = () => {
+            if (window.grecaptcha && window.grecaptcha.render && captchaRef.current && !isLoaded && !isLoadingRef.current && siteKey) {
+                isLoadingRef.current = true;
+                try {
+                    // Create a unique div for this captcha instance
+                    const captchaDiv = document.createElement('div');
+                    captchaDiv.id = `recaptcha-${uniqueId}-${Date.now()}`;
+                    
+                    // Clear any existing content
+                    captchaRef.current.innerHTML = '';
+                    captchaRef.current.appendChild(captchaDiv);
+                    
+                    const newCaptchaId = window.grecaptcha.render(captchaDiv, {
+                        sitekey: siteKey,
+                        callback: onVerify,
+                        'expired-callback': onExpired,
+                        'error-callback': onError,
+                    });
+                    setCaptchaId(newCaptchaId);
+                    setIsLoaded(true);
+                } catch (e) {
+                    console.log('Error rendering captcha:', e);
+                    // Clear and reset on error
+                    if (captchaRef.current) {
+                        captchaRef.current.innerHTML = '';
+                    }
+                    setIsLoaded(false);
+                    setCaptchaId(null);
+                } finally {
+                    isLoadingRef.current = false;
+                }
+            }
+        };
+
+        // Only load if not already loaded and siteKey is provided
+        if (!isLoaded && !isLoadingRef.current && siteKey) {
+            if (window.grecaptcha && window.grecaptcha.render) {
+                loadRecaptcha();
+            } else {
+                const existingScript = document.querySelector('script[src="https://www.google.com/recaptcha/api.js"]');
+                if (!existingScript) {
+                    const script = document.createElement('script');
+                    script.src = 'https://www.google.com/recaptcha/api.js';
+                    script.async = true;
+                    script.defer = true;
+                    script.onload = loadRecaptcha;
+                    document.head.appendChild(script);
+                } else {
+                    const checkInterval = setInterval(() => {
+                        if (window.grecaptcha && window.grecaptcha.render) {
+                            clearInterval(checkInterval);
+                            loadRecaptcha();
+                        }
+                    }, 100);
+                    
+                    setTimeout(() => clearInterval(checkInterval), 10000);
+                }
+            }
+        }
+
+        // Cleanup function
+        return () => {
+            if (captchaRef.current) {
+                captchaRef.current.innerHTML = '';
+            }
+            setIsLoaded(false);
+            setCaptchaId(null);
+            isLoadingRef.current = false;
+        };
+    }, [uniqueId, siteKey]); // Added siteKey dependency
+
+    // Don't render if no site key provided
+    if (!siteKey) {
+        return null;
+    }
+
+    return <div ref={captchaRef} className="recaptcha-container"></div>;
+};
+
+const ConnectionBlock = ({ accountUrl, useRecaptcha, reCaptchaPublicKey }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -52,6 +139,13 @@ const ConnectionBlock = ({ accountUrl }) => {
         agreeTerms: false,
     });
 
+    // reCAPTCHA states
+    const [recaptchaToken, setRecaptchaToken] = useState('');
+    const [recaptchaError, setRecaptchaError] = useState('');
+
+    // Add a counter to force unique keys
+    const [formKey, setFormKey] = useState(0);
+
     const handleLoginChange = (e) => {
         const { name, value, type, checked } = e.target;
         setLoginCredentials({
@@ -73,23 +167,70 @@ const ConnectionBlock = ({ accountUrl }) => {
         window.location.href = accountUrl || '/my-account'; // Use the accountUrl prop if available
     };
 
+    // reCAPTCHA handlers
+    const handleRecaptchaVerify = (token) => {
+        setRecaptchaToken(token);
+        setRecaptchaError('');
+    };
+
+    const handleRecaptchaExpired = () => {
+        setRecaptchaToken('');
+        setRecaptchaError(__('reCAPTCHA expired. Please verify again.', 'wpshop'));
+    };
+
+    const handleRecaptchaError = () => {
+        setRecaptchaToken('');
+        setRecaptchaError(__('reCAPTCHA error. Please try again.', 'wpshop'));
+    };
+
+    const resetRecaptcha = () => {
+        if (window.grecaptcha && window.grecaptcha.getResponse) {
+            try {
+                // Check if there's an active captcha before resetting
+                const response = window.grecaptcha.getResponse();
+                if (response !== undefined) {
+                    window.grecaptcha.reset();
+                }
+            } catch (e) {
+                // Silently handle the error
+            }
+        }
+        setRecaptchaToken('');
+        setRecaptchaError('');
+    };
+
     const handleLoginSubmit = (e) => {
         e.preventDefault();
         setIsLoading(true);
         setError('');
         
+        if (useRecaptcha && !recaptchaToken) {
+            setError(__('Please complete the reCAPTCHA verification.', 'wpshop'));
+            setIsLoading(false);
+            return;
+        }
+        
+        const requestData = {
+            username: loginCredentials.username,
+            password: loginCredentials.password,
+        };
+        
+        if (useRecaptcha) {
+            requestData.recaptcha_token = recaptchaToken;
+        }
+        
         apiFetch({
             path: 'wp-shop/v1/login',
             method: 'POST',
-            data: {
-                username: loginCredentials.username,
-                password: loginCredentials.password,
-            },
+            data: requestData,
         }).then((response) => {
             // Redirect to my-account page on successful login
             redirectToMyAccount();
         }).catch((error) => {
             setError(error.message || __('Login failed. Please check your credentials.', 'wpshop'));
+            if (useRecaptcha) {
+                resetRecaptcha();
+            }
         }).finally(() => {
             setIsLoading(false);
         });
@@ -113,14 +254,26 @@ const ConnectionBlock = ({ accountUrl }) => {
             return;
         }
         
+        if (useRecaptcha && !recaptchaToken) {
+            setError(__('Please complete the reCAPTCHA verification.', 'wpshop'));
+            setIsLoading(false);
+            return;
+        }
+        
+        const requestData = {
+            username: registerInfo.username,
+            email: registerInfo.email,
+            password: registerInfo.password,
+        };
+        
+        if (useRecaptcha) {
+            requestData.recaptcha_token = recaptchaToken;
+        }
+        
         apiFetch({
             path: 'wp-shop/v1/register',
             method: 'POST',
-            data: {
-                username: registerInfo.username,
-                email: registerInfo.email,
-                password: registerInfo.password,
-            },
+            data: requestData,
         }).then((response) => {
             // Reset form data
             setRegisterInfo({
@@ -134,6 +287,9 @@ const ConnectionBlock = ({ accountUrl }) => {
             redirectToMyAccount();
         }).catch((error) => {
             setError(error.message || __('Registration failed.', 'wpshop'));
+            if (useRecaptcha) {
+                resetRecaptcha();
+            }
         }).finally(() => {
             setIsLoading(false);
         });
@@ -145,17 +301,35 @@ const ConnectionBlock = ({ accountUrl }) => {
         setError('');
         setForgotPasswordMessage('');
 
+        if (useRecaptcha && !recaptchaToken) {
+            setError(__('Please complete the reCAPTCHA verification.', 'wpshop'));
+            setIsLoading(false);
+            return;
+        }
+
+        const requestData = {
+            email: forgotPasswordEmail,
+        };
+        
+        if (useRecaptcha) {
+            requestData.recaptcha_token = recaptchaToken;
+        }
+
         apiFetch({
             path: 'wp-shop/v1/forgot-password',
             method: 'POST',
-            data: {
-                email: forgotPasswordEmail,
-            },
+            data: requestData,
         }).then((response) => {
             setForgotPasswordMessage(__('If this email exists in our system, you will receive a password reset link.', 'wpshop'));
             setForgotPasswordEmail('');
+            if (useRecaptcha) {
+                resetRecaptcha();
+            }
         }).catch((error) => {
             setError(error.message || __('Failed to send reset email. Please try again.', 'wpshop'));
+            if (useRecaptcha) {
+                resetRecaptcha();
+            }
         }).finally(() => {
             setIsLoading(false);
         });
@@ -166,7 +340,21 @@ const ConnectionBlock = ({ accountUrl }) => {
         setForgotPasswordMessage('');
         setForgotPasswordEmail('');
         setError('');
+        if (useRecaptcha) {
+            resetRecaptcha();
+        }
     };
+
+    // Effect to reset reCAPTCHA when switching between forms
+    useEffect(() => {
+        // Clear token and error when switching forms
+        if (useRecaptcha) {
+            setRecaptchaToken('');
+            setRecaptchaError('');
+            // Force re-render of captcha with new key
+            setFormKey(prev => prev + 1);
+        }
+    }, [isLogin, showForgotPassword, useRecaptcha]);
 
     return (
         <div className="wp-block-wpshop-connection-block">
@@ -175,26 +363,48 @@ const ConnectionBlock = ({ accountUrl }) => {
                     <div className="connection-tabs">
                         <button 
                             className={`connection-tab ${isLogin ? 'active' : ''}`}
-                            onClick={() => setIsLogin(true)}
+                            disabled={showForgotPassword}
+                            onClick={() => {
+                                if (!showForgotPassword) {
+                                    setIsLogin(true);
+                                    setError('');
+                                    setRecaptchaError('');
+                                    setRecaptchaToken('');
+                                }
+                            }}
                         >
                             {__('Login', 'wpshop')}
                         </button>
                         <button 
                             className={`connection-tab ${!isLogin ? 'active' : ''}`}
-                            onClick={() => setIsLogin(false)}
+                            disabled={showForgotPassword}
+                            onClick={() => {
+                                if (!showForgotPassword) {
+                                    setIsLogin(false);
+                                    setError('');
+                                    setRecaptchaError('');
+                                    setRecaptchaToken('');
+                                }
+                            }}
                         >
                             {__('Register', 'wpshop')}
                         </button>
                     </div>
                 </div>
-                
+
                 <div className="connection-content">
                     {error && (
                         <div className="connection-error">
                             {error}
                         </div>
                     )}
-                    
+
+                    {recaptchaError && (
+                        <div className="connection-error">
+                            {recaptchaError}
+                        </div>
+                    )}
+
                     {forgotPasswordMessage && (
                         <div className="connection-success">
                             {forgotPasswordMessage}
@@ -214,6 +424,19 @@ const ConnectionBlock = ({ accountUrl }) => {
                                     required
                                 />
                             </div>
+                            
+                            {useRecaptcha && (
+                                <div className="form-group recaptcha-group">
+                                    <ReCaptcha 
+                                        key={`forgot-captcha-${formKey}`}
+                                        uniqueId={`forgot-${formKey}`}
+                                        siteKey={reCaptchaPublicKey}
+                                        onVerify={handleRecaptchaVerify}
+                                        onExpired={handleRecaptchaExpired}
+                                        onError={handleRecaptchaError}
+                                    />
+                                </div>
+                            )}
                             
                             <div className="form-actions">
                                 <button type="submit" className="submit-button" disabled={isLoading}>
@@ -260,6 +483,19 @@ const ConnectionBlock = ({ accountUrl }) => {
                                 />
                                 <label htmlFor="rememberMe">{__('Remember me', 'wpshop')}</label>
                             </div>
+                            
+                            {useRecaptcha && (
+                                <div className="form-group recaptcha-group">
+                                    <ReCaptcha 
+                                        key={`login-captcha-${formKey}`}
+                                        uniqueId={`login-${formKey}`}
+                                        siteKey={reCaptchaPublicKey}
+                                        onVerify={handleRecaptchaVerify}
+                                        onExpired={handleRecaptchaExpired}
+                                        onError={handleRecaptchaError}
+                                    />
+                                </div>
+                            )}
                             
                             <div className="form-actions">
                                 <button type="submit" className="submit-button" disabled={isLoading}>
@@ -337,6 +573,19 @@ const ConnectionBlock = ({ accountUrl }) => {
                                 </label>
                             </div>
                             
+                            {useRecaptcha && (
+                                <div className="form-group recaptcha-group">
+                                    <ReCaptcha 
+                                        key={`register-captcha-${formKey}`}
+                                        uniqueId={`register-${formKey}`}
+                                        siteKey={reCaptchaPublicKey}
+                                        onVerify={handleRecaptchaVerify}
+                                        onExpired={handleRecaptchaExpired}
+                                        onError={handleRecaptchaError}
+                                    />
+                                </div>
+                            )}
+                            
                             <div className="form-actions">
                                 <button type="submit" className="submit-button" disabled={isLoading}>
                                     {isLoading ? __('Registering...', 'wpshop') : __('Register', 'wpshop')}
@@ -352,5 +601,7 @@ const ConnectionBlock = ({ accountUrl }) => {
 
 render(<ConnectionBlock 
     accountUrl={document.getElementsByClassName('wp-block-wpshop-connection-block')[0].getAttribute('data-account-link')}
+    useRecaptcha={document.getElementsByClassName('wp-block-wpshop-connection-block')[0].getAttribute('data-use-re-captcha')}
+    reCaptchaPublicKey={document.getElementsByClassName('wp-block-wpshop-connection-block')[0].getAttribute('data-re-captcha-public-key')}
 />, '.wp-block-wpshop-connection-block');
 export default ConnectionBlock;

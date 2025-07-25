@@ -64,6 +64,27 @@ defined( 'ABSPATH' ) || exit;
 		</label>
 	</div>
 
+	<div class="form-element">
+		<label class="form-field-container">
+			<input type="checkbox" id="re_captcha" class="form-field" name="re_captcha" <?php echo !empty($dolibarr_option['re_captcha']) ? 'checked="checked"' : ''; ?> />
+			<label for="re_captcha"><?php esc_html_e( 'Activate re-captcha', 'wpshop' ); ?></label>
+		</label>
+	</div>
+
+	<div class="form-element">
+		<span class="form-label"><?php esc_html_e( 'Site key re-captcha', 'wpshop' ); ?></span>
+		<label class="form-field-container">
+			<input type="text" class="form-field" name="re_captcha_public_key" value="<?php echo esc_attr( $dolibarr_option['re_captcha_public_key'] ?? '' ); ?>" />
+		</label>
+	</div>
+	<div class="form-element">
+		<span class="form-label"><?php esc_html_e( 'Secret key re-captcha', 'wpshop' ); ?></span>
+		<label class="form-field-container">
+			<input type="text" class="form-field" name="re_captcha_private_key" value="<?php echo esc_attr( $dolibarr_option['re_captcha_private_key'] ?? '' ); ?>" />
+		</label>
+	</div>
+
+
 	<div>
 		<input type="submit" class="wpeo-button button-main" value="<?php esc_html_e( 'Save Changes', 'wpshop' ); ?>" />
 	</div>

@@ -291,11 +291,54 @@ class My_Account extends Singleton_Util {
 		include( Template_Util::get_template_part( 'my-account', 'my-account-orders' ) );
 	}
 
+	private function validate_captcha( $request ) {
+		$captcha_response = $request->get_param( 'recaptcha_token' );
+
+		if ( empty( $captcha_response ) ) {
+			return new \WP_Error( 'captcha_missing', __( 'Captcha response is required.', 'wpshop' ), [ 'status' => 400 ] );
+		}
+
+		$dolibarr_option = get_option( 'wps_dolibarr', Settings::g()->default_settings );
+		$secret_key = $dolibarr_option['re_captcha_private_key'] ?? '';
+		if ( empty( $secret_key ) ) {
+			return new \WP_Error( 'captcha_not_configured', __( 'Captcha is not configured on this site.', 'wpshop' ), [ 'status' => 500 ] );
+		}
+
+		$response = wp_remote_post( 'https://www.google.com/recaptcha/api/siteverify', array(
+			'body' => array(
+				'secret'   => $secret_key,
+				'response' => $captcha_response,
+			),
+			'timeout' => 15,
+			'headers' => array(
+				'Content-Type' => 'application/x-www-form-urlencoded',
+			),
+		) );
+		if ( is_wp_error( $response ) ) {
+			return new \WP_Error( 'captcha_verification_failed', __( 'Captcha verification failed. Please try again.', 'wpshop' ), [ 'status' => 500 ] );
+		}
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+		if ( ! $body['success'] ) {
+			return new \WP_Error( 'captcha_invalid', __( 'Invalid captcha response. Please try again.', 'wpshop' ), [ 'status' => 400 ] );
+		}
+		return true;
+	}
+
+
 	public function login( $request ) {
+
 		$creds = [];
 		$creds['user_login'] = $request->get_param( 'username' );
 		$creds['user_password'] = $request->get_param( 'password' );
 		$creds['remember'] = true;
+
+		$dolibarr_option = get_option( 'wps_dolibarr', Settings::g()->default_settings );
+		if ( !empty($dolibarr_option['re_captcha']) ) {
+			$captcha_validation = $this->validate_captcha( $request );
+			if ( is_wp_error( $captcha_validation ) ) {
+				return $captcha_validation;
+			}
+		}
 
 		$user = wp_signon( $creds, false );
 
@@ -315,9 +358,17 @@ class My_Account extends Singleton_Util {
 
 	public function register( $request ) {
 		$username = $request->get_param( 'username' );
-		$email = $request->get_param( 'email' );
+		$email    = $request->get_param( 'email' );
 		$password = $request->get_param( 'password' );
-		
+
+		$dolibarr_option = get_option( 'wps_dolibarr', Settings::g()->default_settings );
+		if ( !empty($dolibarr_option['re_captcha']) ) {
+			$captcha_validation = $this->validate_captcha( $request );
+			if ( is_wp_error( $captcha_validation ) ) {
+				return $captcha_validation;
+			}
+		}
+
 		if ( username_exists( $username ) || email_exists( $email ) ) {
 			return new \WP_Error( 'registration_failed', __( 'Username or email already exists.', 'wpshop' ), [ 'status' => 400 ] );
 		}
@@ -336,6 +387,14 @@ class My_Account extends Singleton_Util {
 	}
 
 	public function forgot_password( $request ) {
+
+		$dolibarr_option = get_option( 'wps_dolibarr', Settings::g()->default_settings );
+		if ( !empty($dolibarr_option['re_captcha']) ) {
+			$captcha_validation = $this->validate_captcha( $request );
+			if ( is_wp_error( $captcha_validation ) ) {
+				return $captcha_validation;
+			}
+		}
 
 		$email = $request->get_param( 'email' );
 		if ( empty( $email ) || ! is_email( $email ) ) {

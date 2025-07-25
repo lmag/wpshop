@@ -1805,6 +1805,15 @@ msgstr "Séparer les lignes des produits dans le panier"
 msgid "Mininum price per product"
 msgstr "Prix minimun par produit"
 
+msgid "Activate re-captcha"
+msgstr "Activer re-captcha"
+
+msgid "Site key re-captcha"
+msgstr "Clé site re-captcha"
+
+msgid "Secret key re-captcha"
+msgstr "Clé secrète re-captcha"
+
 #: modules/settings/view/general.view.php:77
 msgid "Debug mode"
 msgstr "Mode debug"
