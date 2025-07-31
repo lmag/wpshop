@@ -93,8 +93,8 @@ class GravityForms extends Singleton_Util {
 
 				if ( ! empty( $projectId ) ) {
 
-					$result = Request_Util::post(
-						'project/' . $projectId,
+					$result = Request_Util::put(
+						'projects/' . $projectId,
 						array(
 							'date_start' => strtotime( $entry['date_created'] ),
 						)
