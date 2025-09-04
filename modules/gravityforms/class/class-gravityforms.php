@@ -42,8 +42,13 @@ class GravityForms extends Singleton_Util {
 	 */
 	public function populate_easycrm_column( $value, $form_id, $field_id, $entry ) {
 		if ( $field_id === 'easycrm' ) {
+
+			$dolibarr_option = get_option( 'wps_dolibarr', \wpshop\Settings::g()->default_settings );
+
+			$dolibarr_url = $dolibarr_option['dolibarr_url'];
+
 			if ( ! empty( gform_get_meta( $entry['id'], 'easycrm_project_id' ) ) ) {
-				return '<span style="color: #32CD32; font-weight: bold;">Importé</span>';
+				return '<span><a href="' . esc_url( $dolibarr_url . '/projet/card.php?id=' . gform_get_meta( $entry['id'], 'easycrm_project_id' ) ) . '" style="color: #32CD32; font-weight: bold;" target="_blank">Importé</a></span>';
 			} else {
 				return '<span style="color: #DC143C; font-weight: bold;">Non importé</span>';
 			}
@@ -84,10 +89,23 @@ class GravityForms extends Singleton_Util {
 
 			foreach ( $entries as $entry_id ) {
 				$entry = \GFAPI::get_entry( $entry_id );
-				$test_meta = gform_get_meta( $entry_id, 'easycrm_project_id' );
+				$projectId = gform_get_meta( $entry_id, 'easycrm_project_id' );
 
-				if ( ! empty( $test_meta ) ) {
-					continue; // Skip entries with test_meta
+				if ( ! empty( $projectId ) ) {
+
+					$result = Request_Util::put(
+						'projects/' . $projectId,
+						array(
+							'date_start' => strtotime( $entry['date_created'] ),
+						)
+					);
+					if ( $result == false ) {
+						$error_count++;
+						$errors[] = 'Entrée ID ' . $entry_id . ': Erreur lors de la mise à jour du projet dans Dolibarr.';
+						error_log( 'Error updating project in Dolibarr for entry ID ' . $entry_id );
+					}
+
+					continue; // Skip entries with existing project ID
 				}
 
 				$projects[ $entry_id ] = array();
@@ -101,11 +119,12 @@ class GravityForms extends Singleton_Util {
 				$result = Request_Util::post(
 					'easycrm/createProject',
 					array(
-						'title'     => $projects[ $entry_id ]['Société'],
-						'lastname'  => $projects[ $entry_id ]['Nom'],
-						'firstname' => $projects[ $entry_id ]['Prénom'],
-						'email'     => $projects[ $entry_id ]['E-mail'],
-						'phone'     => $projects[ $entry_id ]['Téléphone'],
+						'title'      => $projects[ $entry_id ]['Société'],
+						'lastname'   => $projects[ $entry_id ]['Nom'],
+						'firstname'  => $projects[ $entry_id ]['Prénom'],
+						'email'      => $projects[ $entry_id ]['E-mail'],
+						'phone'      => $projects[ $entry_id ]['Téléphone'],
+						'date_start' => strtotime( $entry['date_created'] ),
 					)
 				);
 
