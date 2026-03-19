@@ -1,0 +1,87 @@
+{
+    "translation-revision-date": "2026-03-19T10:31:46+00:00",
+    "generator": "WPshop",
+    "source": "blocks\/build\/connection-block\/view.js",
+    "domain": "messages",
+    "locale_data": {
+        "messages": {
+            "": {
+                "domain": "messages",
+                "lang": "fr",
+                "plural-forms": "nplurals=2; plural=(n > 1);"
+            },
+            "reCAPTCHA expired. Please verify again.": [
+                "Le reCAPTCHA a expiré. Veuillez vérifier à nouveau."
+            ],
+            "reCAPTCHA error. Please try again.": [
+                "Erreur reCAPTCHA. Veuillez réessayer."
+            ],
+            "Login": [
+                "Connexion"
+            ],
+            "Register": [
+                "S'inscrire"
+            ],
+            "Please complete the reCAPTCHA verification.": [
+                "Veuillez compléter la vérification reCAPTCHA."
+            ],
+            "If this email exists in our system, you will receive a password reset link.": [
+                "Si cet e-mail existe dans notre système, vous recevrez un lien de réinitialisation de mot de passe."
+            ],
+            "Failed to send reset email. Please try again.": [
+                "Échec de l'envoi de l'e-mail de réinitialisation. Veuillez réessayer."
+            ],
+            "Email Address": [
+                "Adresse e-mail"
+            ],
+            "Sending...": [
+                "Envoi en cours..."
+            ],
+            "Send Reset Link": [
+                "Envoyer le lien de réinitialisation"
+            ],
+            "Back to Login": [
+                "Retour à la connexion"
+            ],
+            "Login failed. Please check your credentials.": [
+                "Échec de la connexion. Veuillez vérifier vos identifiants."
+            ],
+            "Username": [
+                "Nom d'utilisateur"
+            ],
+            "Password": [
+                "Mot de passe"
+            ],
+            "Remember me": [
+                "Se souvenir de moi"
+            ],
+            "Logging in...": [
+                "Connexion en cours..."
+            ],
+            "Forgot your password?": [
+                "Mot de passe oublié ?"
+            ],
+            "Passwords do not match": [
+                "Les mots de passe ne correspondent pas"
+            ],
+            "You must agree to the terms and conditions": [
+                "Vous devez accepter les conditions générales"
+            ],
+            "Registration failed.": [
+                "Échec de l'inscription."
+            ],
+            "Email": [
+                "Email"
+            ],
+            "Confirm Password": [
+                "Confirmer le mot de passe"
+            ],
+            "I agree to the Terms and Conditions": [
+                "J'accepte les Conditions Générales de Vente"
+            ],
+            "Registering...": [
+                "Inscription en cours..."
+            ]
+        }
+    }
+}

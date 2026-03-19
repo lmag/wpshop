@@ -45,11 +45,11 @@ defined( 'ABSPATH' ) || exit;
 			foreach ( $cart_contents as $cart_item ) : ?>
 				<tr>
 					<td><?php echo get_the_post_thumbnail( $cart_item['id'], array( 80, 80 ) ); ?></td>
-					<td data-title="<?php echo esc_html( 'Product name', 'wpshop' ); ?>"><a href="<?php echo esc_url( get_permalink( $cart_item['id'] ) ); ?>"><?php echo esc_html( $cart_item['title'] ); ?></a></td>
-					<td data-title="<?php echo esc_html( 'VAT', 'wpshop' ); ?>"><?php echo esc_html( number_format( $cart_item['tva_tx'], 2, ',', '' ) ); ?>%</td>
-					<td data-title="<?php echo esc_html( 'P.U. HT', 'wpshop' ); ?>"><?php echo esc_html( number_format( $cart_item['price'], 2, ',', '' ) ); ?>€</td>
-					<td data-title="<?php echo esc_html( 'Quantity', 'wpshop' ); ?>"><?php echo esc_html( $cart_item['qty'] ); ?></td>
-					<td data-title="<?php echo esc_html( 'Total HT', 'wpshop' ); ?>"><?php echo esc_html( number_format( $cart_item['price'] * $cart_item['qty'], 2, ',', '' ) ); ?>€</td>
+					<td data-title="<?php echo esc_html__( 'Product name', 'wpshop' ); ?>"><a href="<?php echo esc_url( get_permalink( $cart_item['id'] ) ); ?>"><?php echo esc_html( $cart_item['title'] ); ?></a></td>
+					<td data-title="<?php echo esc_html__( 'VAT', 'wpshop' ); ?>"><?php echo esc_html( number_format( $cart_item['tva_tx'], 2, ',', '' ) ); ?>%</td>
+					<td data-title="<?php echo esc_html__( 'P.U. HT', 'wpshop' ); ?>"><?php echo esc_html( number_format( $cart_item['price'], 2, ',', '' ) ); ?>€</td>
+					<td data-title="<?php echo esc_html__( 'Quantity', 'wpshop' ); ?>"><?php echo esc_html( $cart_item['qty'] ); ?></td>
+					<td data-title="<?php echo esc_html__( 'Total HT', 'wpshop' ); ?>"><?php echo esc_html( number_format( $cart_item['price'] * $cart_item['qty'], 2, ',', '' ) ); ?>€</td>
 				</tr>
 			<?php endforeach;
 		endif;

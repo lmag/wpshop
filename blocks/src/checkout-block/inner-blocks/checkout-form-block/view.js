@@ -33,6 +33,7 @@ import apiFetch from '@wordpress/api-fetch';
 const CheckoutForm = () => {
 
     const [ countries, setCountries ] = useState([]);
+    const [ emailError, setEmailError ] = useState(false);
 
     const { setValue, setFields } = useDispatch(storeName);
 
@@ -56,9 +57,14 @@ const CheckoutForm = () => {
         }
     }, []);
 
-    const handleChange = (event) => {   
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const handleChange = (event) => {
         const { name, value } = event.target;
         setValue({ ...values, [name]: value });
+        if (name === 'email') {
+            setEmailError(value.length > 0 && !emailRegex.test(value));
+        }
     }
 
 
@@ -106,7 +112,7 @@ const CheckoutForm = () => {
                 </label>
             </div>
 
-            <div class="form-element contact-email form-element-required gridw-3">
+            <div class={`form-element contact-email form-element-required gridw-3${emailError ? ' form-element-error' : ''}`}>
                 <label class="form-field-container">
                     <input type="text" class="form-field" name="email" placeholder={__( 'Email', 'wpshop' )} value={values.email} onChange={handleChange} />
                 </label>

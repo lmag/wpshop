@@ -1,0 +1,45 @@
+{
+    "translation-revision-date": "2026-03-19T10:31:46+00:00",
+    "generator": "WPshop",
+    "source": "blocks\/build\/connection-block\/index.js",
+    "domain": "messages",
+    "locale_data": {
+        "messages": {
+            "": {
+                "domain": "messages",
+                "lang": "fr",
+                "plural-forms": "nplurals=2; plural=(n > 1);"
+            },
+            "Login": [
+                "Connexion"
+            ],
+            "Register": [
+                "S'inscrire"
+            ],
+            "Username": [
+                "Nom d'utilisateur"
+            ],
+            "Password": [
+                "Mot de passe"
+            ],
+            "Remember me": [
+                "Se souvenir de moi"
+            ],
+            "Forgot your password?": [
+                "Mot de passe oublié ?"
+            ],
+            "Email": [
+                "Email"
+            ],
+            "Confirm Password": [
+                "Confirmer le mot de passe"
+            ],
+            "I agree to the Terms and Conditions": [
+                "J'accepte les Conditions Générales de Vente"
+            ],
+            "This is a preview of the Connection Block. The form will be fully functional on the front-end.": [
+                "Ceci est un aperçu du bloc de connexion. Le formulaire sera entièrement fonctionnel sur le site."
+            ]
+        }
+    }
+}

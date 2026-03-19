@@ -18,7 +18,7 @@ if ( ! empty( $cart ) ) {
 $tva_amount = $total_price_ttc - $total_price_no_shipping;
 ?>
 
-<div class="wps-checkout-subtitle wps-checkout-subtitle-step-2"><?php echo esc_html( 'Your order', 'wpshop' ) ?></div>
+<div class="wps-checkout-subtitle wps-checkout-subtitle-step-2"><?php echo esc_html__( 'Your order', 'wpshop' ); ?></div>
 
 <div <?php echo wp_kses_data( get_block_wrapper_attributes( [ 'class' => 'wps-cart-resume' ]) ); ?>>
 
@@ -54,11 +54,11 @@ $tva_amount = $total_price_ttc - $total_price_no_shipping;
     <?php endif; ?>
 
     <li class="wps-resume-line">
-        <span class="wps-line-content"><?php echo esc_html( 'Subtotal', 'wpshop' ); ?></span>
+        <span class="wps-line-content"><?php echo esc_html__( 'Subtotal', 'wpshop' ); ?></span>
         <span class="wps-line-value"><?php echo esc_html( number_format( $total_price_no_shipping, 2, '.', '' ) ); ?>€</span>
     </li>
     <li class="wps-resume-line">
-        <span class="wps-line-content"><?php echo esc_html( 'Taxes', 'wpshop' ); ?></span>
+        <span class="wps-line-content"><?php echo esc_html__( 'Taxes', 'wpshop' ); ?></span>
         <span class="wps-line-value"><?php echo esc_html( number_format( $tva_amount, 2, '.', '' ) ); ?>€</span>
     </li>
 

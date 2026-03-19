@@ -108,7 +108,7 @@ class WPshop_Action {
 		}
 		
 		// Enregistrer les traductions pour les scripts JavaScript avant d'enregistrer les blocs
-		wp_set_script_translations('wpshop-blocks', 'wpshop', PLUGIN_WPSHOP_DIR . '/core/asset/language');
+		wp_set_script_translations('wpshop-blocks', 'wpshop', PLUGIN_WPSHOP_PATH . 'core/asset/language');
 		
 		$block_dir_urls = scandir($block_build_dir);
 
@@ -124,23 +124,41 @@ class WPshop_Action {
 			if (file_exists($block_json_path)) {
 				// Read block.json to get the block name
 				$block_json = json_decode(file_get_contents($block_json_path), true);
-				
+
 				if (!empty($block_json['name'])) {
 					// Check if block is already registered
 					if (!\WP_Block_Type_Registry::get_instance()->is_registered($block_json['name'])) {
 						$block_type = register_block_type($block_dir);
-						
-						// Set translations for block script if available
-						if ($block_type && !empty($block_type->editor_script)) {
-							wp_set_script_translations($block_type->editor_script, 'wpshop', PLUGIN_WPSHOP_DIR . '/core/asset/language');
+
+						// Set translations for all block scripts
+						if ($block_type) {
+							$lang_path = PLUGIN_WPSHOP_PATH . 'core/asset/language';
+							foreach ( $block_type->editor_script_handles as $handle ) {
+								wp_set_script_translations( $handle, 'wpshop', $lang_path );
+							}
+							foreach ( $block_type->view_script_handles as $handle ) {
+								wp_set_script_translations( $handle, 'wpshop', $lang_path );
+							}
+							foreach ( $block_type->script_handles as $handle ) {
+								wp_set_script_translations( $handle, 'wpshop', $lang_path );
+							}
 						}
 					} else {
 						error_log('WPShop: Block already registered: ' . $block_json['name']);
 					}
 				} else {
 					$block_type = register_block_type($block_dir);
-					if ($block_type && !empty($block_type->editor_script)) {
-						wp_set_script_translations($block_type->editor_script, 'wpshop', PLUGIN_WPSHOP_DIR . '/core/asset/language');
+					if ($block_type) {
+						$lang_path = PLUGIN_WPSHOP_PATH . 'core/asset/language';
+						foreach ( $block_type->editor_script_handles as $handle ) {
+							wp_set_script_translations( $handle, 'wpshop', $lang_path );
+						}
+						foreach ( $block_type->view_script_handles as $handle ) {
+							wp_set_script_translations( $handle, 'wpshop', $lang_path );
+						}
+						foreach ( $block_type->script_handles as $handle ) {
+							wp_set_script_translations( $handle, 'wpshop', $lang_path );
+						}
 					}
 				}
 			} else {
@@ -167,12 +185,36 @@ class WPshop_Action {
 						if (!empty($inner_block_json['name'])) {
 							// Check if block is already registered
 							if (!\WP_Block_Type_Registry::get_instance()->is_registered($inner_block_json['name'])) {
-								register_block_type($inner_block_path);
+								$inner_block_type = register_block_type($inner_block_path);
+								if ($inner_block_type) {
+									$lang_path = PLUGIN_WPSHOP_PATH . 'core/asset/language';
+									foreach ( $inner_block_type->editor_script_handles as $handle ) {
+										wp_set_script_translations( $handle, 'wpshop', $lang_path );
+									}
+									foreach ( $inner_block_type->view_script_handles as $handle ) {
+										wp_set_script_translations( $handle, 'wpshop', $lang_path );
+									}
+									foreach ( $inner_block_type->script_handles as $handle ) {
+										wp_set_script_translations( $handle, 'wpshop', $lang_path );
+									}
+								}
 							} else {
 								error_log('WPShop: Inner block already registered: ' . $inner_block_json['name']);
 							}
 						} else {
-							register_block_type($inner_block_path);
+							$inner_block_type = register_block_type($inner_block_path);
+							if ($inner_block_type) {
+								$lang_path = PLUGIN_WPSHOP_PATH . 'core/asset/language';
+								foreach ( $inner_block_type->editor_script_handles as $handle ) {
+									wp_set_script_translations( $handle, 'wpshop', $lang_path );
+								}
+								foreach ( $inner_block_type->view_script_handles as $handle ) {
+									wp_set_script_translations( $handle, 'wpshop', $lang_path );
+								}
+								foreach ( $inner_block_type->script_handles as $handle ) {
+									wp_set_script_translations( $handle, 'wpshop', $lang_path );
+								}
+							}
 						}
 					} else {
 						error_log('WPShop: Fichier block.json non trouvé dans: ' . $inner_block_path);
@@ -249,7 +291,7 @@ class WPshop_Action {
 		add_editor_style( PLUGIN_WPSHOP_URL . 'core/external/eo-framework/core/assets/css/style.min.css' );
 		
 		wp_enqueue_script( 'wpshop-frontend-script', PLUGIN_WPSHOP_URL . 'core/asset/js/frontend.min.js', array(), \eoxia\Config_Util::$init['wpshop']->version );
-		wp_set_script_translations( 'wpshop-frontend-script', 'wpshop', PLUGIN_WPSHOP_DIR . '/core/asset/language' );
+		wp_set_script_translations( 'wpshop-frontend-script', 'wpshop', PLUGIN_WPSHOP_PATH . 'core/asset/language' );
 
 		$dolibarr_option = get_option( 'wps_dolibarr', Settings::g()->default_settings );
 

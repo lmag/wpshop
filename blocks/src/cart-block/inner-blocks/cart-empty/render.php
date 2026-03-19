@@ -10,5 +10,5 @@
 ?>
 
 <div <?php echo wp_kses_data( get_block_wrapper_attributes() ); ?>>
-    <?php echo $content; ?>
+    <p><?php echo esc_html__( 'Empty cart', 'wpshop' ); ?></p>
 </div>

@@ -1,0 +1,24 @@
+{
+    "translation-revision-date": "2026-03-19T10:31:46+00:00",
+    "generator": "WPshop",
+    "source": "blocks\/build\/checkout-block\/inner-blocks\/checkout-button-block\/view.js",
+    "domain": "messages",
+    "locale_data": {
+        "messages": {
+            "": {
+                "domain": "messages",
+                "lang": "fr",
+                "plural-forms": "nplurals=2; plural=(n > 1);"
+            },
+            "Please accept the terms and conditions.": [
+                "Veuillez accepter les conditions générales."
+            ],
+            "Please fill in all required fields.": [
+                "Veuillez remplir tous les champs obligatoires."
+            ],
+            "Proceed to Checkout": [
+                "Procéder au paiement"
+            ]
+        }
+    }
+}

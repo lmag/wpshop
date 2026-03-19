@@ -2284,3 +2284,113 @@ msgstr "Outils"
 
 #~ msgid "Click here to create your password: <a href=\"%s\">Create my password</a>"
 #~ msgstr "Cliquez ici pour créer  votre mot de passe : <a href=\"%s\">Créer mon mot de passe</a>"
+
+
+#: blocks (auto-generated)
+
+msgid "Auth Status Block – hello from the editor!"
+msgstr "Auth Status Block – bonjour depuis l'éditeur !"
+
+msgid "Confirm Password"
+msgstr "Confirmer le mot de passe"
+
+msgid "Forgot your password?"
+msgstr "Mot de passe oublié ?"
+
+msgid "I accept the terms and conditions"
+msgstr "J'accepte les conditions générales"
+
+msgid "I agree to the Terms and Conditions"
+msgstr "J'accepte les Conditions Générales de Vente"
+
+msgid "Loading..."
+msgstr "Chargement..."
+
+msgid "No orders."
+msgstr "Aucune commande."
+
+msgid "Register"
+msgstr "S'inscrire"
+
+msgid "Remember me"
+msgstr "Se souvenir de moi"
+
+msgid "Subtotal"
+msgstr "Sous-total"
+
+msgid "Taxes"
+msgstr "Taxes"
+
+msgid "Shipping costs"
+msgstr "Frais de livraison"
+
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+msgid "Back to Login"
+msgstr "Retour à la connexion"
+
+msgid "Email Address"
+msgstr "Adresse e-mail"
+
+msgid "Empty cart"
+msgstr "Panier vide"
+
+msgid "Failed to send reset email. Please try again."
+msgstr "Échec de l'envoi de l'e-mail de réinitialisation. Veuillez réessayer."
+
+msgid "If this email exists in our system, you will receive a password reset link."
+msgstr "Si cet e-mail existe dans notre système, vous recevrez un lien de réinitialisation de mot de passe."
+
+msgid "Logging in..."
+msgstr "Connexion en cours..."
+
+msgid "Login failed. Please check your credentials."
+msgstr "Échec de la connexion. Veuillez vérifier vos identifiants."
+
+msgid "Mon compte"
+msgstr "Mon compte"
+
+msgid "My Account"
+msgstr "Mon compte"
+
+msgid "Passwords do not match"
+msgstr "Les mots de passe ne correspondent pas"
+
+msgid "Please accept the terms and conditions."
+msgstr "Veuillez accepter les conditions générales."
+
+msgid "Please complete the reCAPTCHA verification."
+msgstr "Veuillez compléter la vérification reCAPTCHA."
+
+msgid "Please fill in all required fields."
+msgstr "Veuillez remplir tous les champs obligatoires."
+
+msgid "Proceed to Checkout"
+msgstr "Procéder au paiement"
+msgid "Registering..."
+msgstr "Inscription en cours..."
+
+msgid "Registration failed."
+msgstr "Échec de l'inscription."
+
+msgid "Send Reset Link"
+msgstr "Envoyer le lien de réinitialisation"
+
+msgid "Sending..."
+msgstr "Envoi en cours..."
+
+msgid "This is a preview of the Connection Block. The form will be fully functional on the front-end."
+msgstr "Ceci est un aperçu du bloc de connexion. Le formulaire sera entièrement fonctionnel sur le site."
+
+msgid "You must agree to the terms and conditions"
+msgstr "Vous devez accepter les conditions générales"
+
+msgid "reCAPTCHA error. Please try again."
+msgstr "Erreur reCAPTCHA. Veuillez réessayer."
+
+msgid "reCAPTCHA expired. Please verify again."
+msgstr "Le reCAPTCHA a expiré. Veuillez vérifier à nouveau."
+
+msgid "Avatar"
+msgstr "Avatar"
