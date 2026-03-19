@@ -1,0 +1,18 @@
+{
+    "translation-revision-date": "2026-03-19T10:31:46+00:00",
+    "generator": "WPshop",
+    "source": "blocks\/build\/checkout-block\/inner-blocks\/checkout-acceptance-block\/index.js",
+    "domain": "messages",
+    "locale_data": {
+        "messages": {
+            "": {
+                "domain": "messages",
+                "lang": "fr",
+                "plural-forms": "nplurals=2; plural=(n > 1);"
+            },
+            "I accept the terms and conditions": [
+                "J'accepte les conditions générales"
+            ]
+        }
+    }
+}

@@ -121,6 +121,13 @@
         }
     }
     
+    /** Required field - red placeholder */
+    .wpeo-form .form-element {
+        &.form-element-required .form-field::placeholder {
+            color: #e05353;
+        }
+    }
+
     /** Erreur sur un champs */
     .wpeo-form .form-element {
         &.form-element-error .form-field-container {

@@ -32,7 +32,7 @@ import './scss/editor.scss';
 export default function Edit() {
 	return (
 		<p { ...useBlockProps() }>
-			{ __( 'Auth Status Block – hello from the editor!', 'auth-status-block' ) }
+			{ __( 'Auth Status Block – hello from the editor!', 'wpshop' ) }
 		</p>
 	);
 }

@@ -58,7 +58,7 @@ class Checkout extends Singleton_Util {
 		$data['contact']['email']          = ! empty( $_POST['contact']['email'] ) ? sanitize_email( $_POST['contact']['email'] ) : '';
 		$data['contact']['password']       = ! empty( $_POST['contact']['password'] ) ? (string) ( $_POST['contact']['password'] ) : '';
 		$data['third_party']['country_id'] = ! empty( $_POST['third_party']['country_id'] ) ? (int) ( $_POST['third_party']['country_id'] ) : '';
-		$data['third_party']['contact']    = ! empty( $_POST['third_party']['contact'] ) ? sanitize_text_field( $_POST['third_party']['contact'] ) : '';
+		$data['third_party']['address']    = ! empty( $_POST['third_party']['address'] ) ? sanitize_text_field( $_POST['third_party']['address'] ) : '';
 		$data['third_party']['zip']        = ! empty( $_POST['third_party']['zip'] ) ? sanitize_text_field( $_POST['third_party']['zip'] ) : '';
 		$data['third_party']['town']       = ! empty( $_POST['third_party']['town'] ) ? sanitize_text_field( $_POST['third_party']['town'] ) : '';
 		$data['terms']                     = ( ! empty( $_POST['terms'] ) && 'true' === $_POST['terms'] ) ? true : false;
@@ -105,19 +105,19 @@ class Checkout extends Singleton_Util {
 			'third_party' => array(
 				'country_id' => array(
 					'label'    => __( 'Country', 'wpshop' ),
-					'required' => false,
+					'required' => true,
 				),
-				'contact'    => array(
+				'address'    => array(
 					'label'    => __( 'Street Address', 'wpshop' ),
-					'required' => false,
+					'required' => true,
 				),
 				'zip'        => array(
 					'label'    => __( 'Postcode / Zip', 'wpshop' ),
-					'required' => false,
+					'required' => true,
 				),
 				'town'       => array(
 					'label'    => __( 'Town / City', 'wpshop' ),
-					'required' => false,
+					'required' => true,
 				),
 			),
 		);
@@ -325,7 +325,7 @@ class Checkout extends Singleton_Util {
 		return rest_ensure_response( [
 			'values' => [
 				'country_id' => $third_party->data['country_id'] ??  0,
-				'contact'    => $third_party->data['address'] ?? '',
+				'address'    => $third_party->data['address'] ?? '',
 				'zip'        => $third_party->data['zip'] ?? '',
 				'town'       => $third_party->data['town'] ?? '',
 				'firstname'  => $contact->data['firstname']	?? '',

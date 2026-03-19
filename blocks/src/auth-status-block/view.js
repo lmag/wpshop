@@ -59,12 +59,12 @@ const AuthStatus = (props) => {
             <div className="auth-status-header" onClick={handleClick}>
                 <img
                     src={getAvatarSrc()}
-                    alt="Avatar"
+                    alt={__('Avatar', 'wpshop')}
                     className="auth-status-avatar"
                     onError={handleImageError}
                 />
                 <span className="auth-status-text">
-                    {isConnected ? user_email : __('Mon compte', 'auth-status-block')}
+                    {isConnected ? user_email : __('Mon compte', 'wpshop')}
                 </span>
             </div>
         </div>
